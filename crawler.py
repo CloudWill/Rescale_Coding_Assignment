@@ -7,7 +7,7 @@ from multiprocessing import freeze_support, Queue
 
 
 # basic logging. 0 for errors and 1 for non-errors
-def logging(msg, code):
+def Logging(msg, code):
     if code == 0:
         with open('web_scrapper_rescale_errors.txt', 'a') as file:
             print(f'{datetime.now()} : {msg}')
@@ -19,9 +19,9 @@ def logging(msg, code):
             file.write(f'{msg}\n')
 
 
-def web_crawl(queue, weblink, webcrawlResults):
+def Web_Crawl(queue, weblink, webcrawlResults):
     # we're logging the URL of the page fetched
-    logging(f'{weblink}', 1)
+    Logging(f'{weblink}', 1)
     childrenLinks = []
 
     try:
@@ -36,7 +36,7 @@ def web_crawl(queue, weblink, webcrawlResults):
                     # we're adding all the children with the absolute URLS. No duplicates
                     if child not in childrenLinks:
                         # we're getting and logging the URL found on the page
-                        logging(f'\t{child}', 1)
+                        Logging(f'\t{child}', 1)
                         childrenLinks.append(child)
         # we're adding all the child links to the parent URL
         if weblink not in webcrawlResults:
@@ -48,10 +48,10 @@ def web_crawl(queue, weblink, webcrawlResults):
                 queue.put(child)
 
     except requests.exceptions.RequestException as e:
-        logging(f'error with {weblink}', 0)
+        Logging(f'error with {weblink}', 0)
 
 
-def print_webcrawler_results(webcrawlResults):
+def Print_Webcrawler_Results(webcrawlResults):
     with open('website_crawled_results.txt', 'w') as file:
         for key in webcrawlResults:
             file.write(f'{key}\n')
@@ -59,7 +59,7 @@ def print_webcrawler_results(webcrawlResults):
                 file.write(f'\t{value}\n')
 
 
-def parallel(queue, webcrawlResults, totalCrawls):
+def Parallel(queue, webcrawlResults, totalCrawls):
     # only exit if the queue is empty or an arbitrary amount of web crawls
     currentCrawl = 0
     while not queue.empty() and not currentCrawl >= totalCrawls:
@@ -75,7 +75,7 @@ def parallel(queue, webcrawlResults, totalCrawls):
             else:
                 url = queue.get()
 
-            p = mp.Process(target=web_crawl, args=(queue, url, webcrawlResults,))
+            p = mp.Process(target=Web_Crawl, args=(queue, url, webcrawlResults,))
             p.start()
             process_list.append(p)
 
@@ -84,22 +84,22 @@ def parallel(queue, webcrawlResults, totalCrawls):
             count += 1
 
 
-def end_program():
+def End_Program():
     print('exiting')
     exit(0)
 
 
-def main(url, totalCrawls):
+def Main(url, totalCrawls):
     freeze_support()
     manager = mp.Manager()
     webcrawlResults = manager.dict()
     queue = manager.Queue()
     queue.put(url)
     try:
-        parallel(queue, webcrawlResults, totalCrawls)
+        Parallel(queue, webcrawlResults, totalCrawls)
     except KeyboardInterrupt:
-        end_program()
-    print_webcrawler_results(webcrawlResults)
+        End_Program()
+    Print_Webcrawler_Results(webcrawlResults)
     print("exit")
 
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     match args:
         case 1:
             print('error: please enter an url')
-            end_program()
+            End_Program()
         case 2:
             url = sys.argv[1]
         case 3:
@@ -121,4 +121,4 @@ if __name__ == '__main__':
             print('\n\nthis program will only be using the first two arguments\n\n')
             url = sys.argv[1]
             totalCrawls = int(sys.argv[2])
-    main(url, totalCrawls)
+    Main(url, totalCrawls)

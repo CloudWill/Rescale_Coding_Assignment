@@ -19,9 +19,18 @@ def hashfile(file):
 def test_parent_child_3_searches():
     # we're only doing 3 crawls for this website
     # ideally we want an internal website we can test that will not change to make sure the program is working
-    main("https://rescale.com/", 3)
+    Main("https://rescale.com/", 3)
 
     f1_hash = hashfile("./test/test_rescale_3_searches.txt")
     f2_hash = hashfile("./website_crawled_results.txt")
 
     assert f1_hash == f2_hash
+
+
+def test_invalid_url():
+    url = "invalidurl"
+    Main(url, 32)
+    with open('web_scrapper_rescale_errors.txt', 'r') as f:
+        lines = f.read().splitlines()
+        last_line = lines[-1]
+        assert url in last_line
