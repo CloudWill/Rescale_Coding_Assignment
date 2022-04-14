@@ -1,0 +1,6 @@
+.git
+.idea
+__pycache__
+website_crawled_results.txt
+web_scrapper_rescale_errors.txt
+web_scrapper_rescale.txt
