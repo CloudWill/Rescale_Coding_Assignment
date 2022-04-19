@@ -107,18 +107,20 @@ if __name__ == '__main__':
     # we're getting the cmd line arguments and assigning the appropriate variables
     args = len(sys.argv)
     totalCrawls = -1
+    if args == 1:
+        print('error: please enter an url')
+        End_Program()
 
-    match args:
-        case 1:
-            print('error: please enter an url')
-            End_Program()
-        case 2:
-            url = sys.argv[1]
-        case 3:
-            url = sys.argv[1]
-            totalCrawls = int(sys.argv[2])
-        case _:
-            print('\n\nthis program will only be using the first two arguments\n\n')
-            url = sys.argv[1]
-            totalCrawls = int(sys.argv[2])
+    elif args == 2:
+        url = sys.argv[1]
+
+    elif args == 3:
+        url = sys.argv[1]
+        totalCrawls = int(sys.argv[2])
+
+    else:
+        print('\n\nthis program will only be using the first two arguments\n\n')
+        url = sys.argv[1]
+        totalCrawls = int(sys.argv[2])
+
     Main(url, totalCrawls)
